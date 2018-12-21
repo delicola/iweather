@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 //import com.coolweather.android.R;
 
 import njupt.iot.hobert.iweather.gson.Forecast;
+import njupt.iot.hobert.iweather.gson.Lifestyle;
 import njupt.iot.hobert.iweather.gson.Weather;
 import njupt.iot.hobert.iweather.service.AutoUpdateService;
 import njupt.iot.hobert.iweather.util.HttpUtil;
@@ -65,6 +66,16 @@ public class WeatherActivity extends AppCompatActivity {
 
     private TextView sportText;
 
+    private TextView fluText;
+
+    private TextView comfortText_num;
+
+    private TextView carWashText_num;
+
+    private TextView sportText_num;
+
+    private TextView fluText_num;
+
     private ImageView bingPicImg;
 
     private String mWeatherId;
@@ -83,15 +94,20 @@ public class WeatherActivity extends AppCompatActivity {
         bingPicImg = (ImageView) findViewById(R.id.bing_pic_img);
         weatherLayout = (ScrollView) findViewById(R.id.weather_layout);
         titleCity = (TextView) findViewById(R.id.title_city);
-        titleUpdateTime = (TextView) findViewById(R.id.title_update_time);
+        titleUpdateTime = (TextView) findViewById(R.id.last_time_text);
         degreeText = (TextView) findViewById(R.id.degree_text);
         weatherInfoText = (TextView) findViewById(R.id.weather_info_text);
         forecastLayout = (LinearLayout) findViewById(R.id.forecast_layout);
         aqiText = (TextView) findViewById(R.id.aqi_text);
         pm25Text = (TextView) findViewById(R.id.pm25_text);
         comfortText = (TextView) findViewById(R.id.comfort_text);
-        carWashText = (TextView) findViewById(R.id.car_wash_text);
+        carWashText = (TextView) findViewById(R.id.car_text);
         sportText = (TextView) findViewById(R.id.sport_text);
+        fluText = (TextView) findViewById(R.id.flu_text);
+        comfortText_num = (TextView) findViewById(R.id.comfort_text_num);
+        carWashText_num = (TextView) findViewById(R.id.car_text_num);
+        fluText_num = (TextView)findViewById(R.id.flu_text_num);
+        sportText_num = (TextView)findViewById(R.id.sport_text_num) ;
         swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -209,7 +225,7 @@ public class WeatherActivity extends AppCompatActivity {
      */
     private void showWeatherInfo(Weather weather) {
         String cityName = weather.basic.cityName;
-        String updateTime = weather.update.updateTime.split(" ")[1];
+        String updateTime = "更新时间："+weather.update.updateTime.split(" ")[1];
         String degree = weather.now.temperature + "℃";
         String weatherInfo = weather.now.info;
         titleCity.setText(cityName);
@@ -223,26 +239,38 @@ public class WeatherActivity extends AppCompatActivity {
             TextView infoText = (TextView) view.findViewById(R.id.info_text);
             TextView maxText = (TextView) view.findViewById(R.id.max_text);
             TextView minText = (TextView) view.findViewById(R.id.min_text);
+
             dateText.setText(forecast.date);
             infoText.setText(forecast.cond_txt_d);
-            maxText.setText(forecast.tmp_max);
-            minText.setText(forecast.tmp_min);
+            String tmp_max = forecast.tmp_max + "℃";
+            maxText.setText(tmp_max);
+            String tmp_min = forecast.tmp_min + "℃";
+            minText.setText(tmp_min);
             forecastLayout.addView(view);
         }
-//        if (weather.aqi != null) {
-//            aqiText.setText(weather.aqi.city.aqi);
-//            pm25Text.setText(weather.aqi.city.pm25);
-//        }
-//        String comfort = "舒适度：" + weather.lifestyle.comfort.info;
-//        String carWash = "洗车指数：" + weather.lifestyle.carWash.info;
-//        String sport = "运行建议：" + weather.lifestyle.sport.info;
+        for(Lifestyle lifestyle : weather.lifestyleList){
+            if(lifestyle.type.equals("comf")){
+                String comfor_num = "舒适度：" + lifestyle.brf;
+                comfortText_num.setText(comfor_num);
+                comfortText.setText(lifestyle.txt);
+            }
+            if(lifestyle.type.equals("cw")){
+                String cw_num = "洗车指数：" + lifestyle.brf;
+                carWashText_num.setText(cw_num);
+                carWashText.setText(lifestyle.txt);
+            }
+            if(lifestyle.type.equals("flu")){
+                String flu_num = "感冒指数：" + lifestyle.brf;
+                fluText_num.setText(flu_num);
+                fluText.setText(lifestyle.txt);
+            }
+            if(lifestyle.type.equals("sport")){
+                String sport_num = "运动指数：" + lifestyle.brf;
+                sportText_num.setText(sport_num);
+                sportText.setText(lifestyle.txt);
+            }
+        }
 
-        String comfort = "舒适度：" + "0";
-        String carWash = "洗车指数：" + "0";
-        String sport = "运行建议：" + "0";
-        comfortText.setText(comfort);
-        carWashText.setText(carWash);
-        sportText.setText(sport);
         weatherLayout.setVisibility(View.VISIBLE);
         Intent intent = new Intent(this, AutoUpdateService.class);
         startService(intent);

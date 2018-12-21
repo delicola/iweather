@@ -2,6 +2,8 @@ package njupt.iot.hobert.iweather.gson;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class Lifestyle {
     /**
      * brf : 舒适
@@ -9,37 +11,10 @@ public class Lifestyle {
      * type : comf
      */
 
-    private String type;
-    private String brf;
-    private String txt;
+    public String type;
+    public String brf;
+    public String txt;
 
-//    @SerializedName("comf")
-//    public Comfort comfort;
-//
-//    @SerializedName("cw")
-//    public CarWash carWash;
-//
-//    public Sport sport;
-//
-//    public class Comfort {
-//
-//        @SerializedName("txt")
-//        public String info;
-//
-//    }
-//
-//    public class CarWash {
-//
-//        @SerializedName("txt")
-//        public String info;
-//
-//    }
-//
-//    public class Sport {
-//
-//        @SerializedName("txt")
-//        public String info;
-//}
 
 
 }
